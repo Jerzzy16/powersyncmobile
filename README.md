@@ -67,22 +67,9 @@ yarn start
 
 ```powershell
 yarn android
-# or: npm run android
+# or: npm run android/ npx expo run:android
 ```
 
-- iOS (macOS only):
-
-```powershell
-yarn ios
-# or: npm run ios
-```
-
-- Web (development):
-
-```powershell
-yarn web
-# or: npm run web
-```
 
 Notes:
 - Because this project includes native modules, the standard Expo Go client will not work. Use `expo run:android` / `expo run:ios` or create a custom dev client via `eas build -p android --profile development` and install it on your device.
@@ -97,8 +84,6 @@ This repository includes `eas.json` for EAS builds. Example commands:
 # Android production build
 eas build -p android --profile production
 
-# iOS production build (macOS or EAS cloud)
-eas build -p ios --profile production
 ```
 
 Follow Expo/EAS docs to configure credentials (keystore, Apple credentials) before building.
@@ -109,8 +94,6 @@ Follow Expo/EAS docs to configure credentials (keystore, Apple credentials) befo
 
 - `start` — Expo start server (Metro)
 - `android` — expo run:android (installs and runs on device/emulator)
-- `ios` — expo run:ios (macOS only)
-- `web` — run web build with Expo
 - `lint` — run ESLint
 - `test` — run Jest tests
 
