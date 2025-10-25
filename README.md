@@ -1,173 +1,190 @@
-# 🏋️ PowerSync
+# 🏋️ PowerSync (powersync-mobile-personal)
 
-**PowerSync** is a mobile app designed for powerlifters to track and analyze their form through real-time pose estimation. It streams video to a FastAPI backend for AI-based feedback using models like MoveNet. Built with **React Native (Expo)** and native modules, the app must be built and sideloaded—it is **not compatible with Expo Go**.
+PowerSync is a mobile application for lifters that captures camera frames, streams them to a backend for pose estimation, and provides form analysis and feedback. This repository contains the mobile client built with React Native + Expo (with native modules), integrates Firebase, and uses several native libraries (e.g., TensorFlow Lite bindings, Vision Camera).
 
----
-
-## 📱 Features
-
-* Live video streaming from your phone camera
-* Real-time pose estimation using AI models
-* Backend processing with FastAPI + WebRTC
-* Frontend built with React Native + Expo (with native modules)
-* Easy connection to server with STUN/TURN ICE configuration
+This project uses Expo with EAS for production builds. Note: because this app includes native modules it is not compatible with the standard Expo Go client; use a development client or build an APK/IPA.
 
 ---
 
-## 🛠️ Requirements
+## Tech stack
 
-### Local Development
-
-| Tool          | Version Recommended                    |
-| ------------- | -------------------------------------- |
-| Node.js       | `>= 18.x`                              |
-| Yarn          | `>= 1.x`                               |
-| Expo CLI      | `>= 7.x`                               |
-| EAS CLI       | `>= 3.x`                               |
-| Android Phone | APK installer or USB Debugging enabled |
-| Git           | Any recent version                     |
+- React Native (0.79.x) + Expo (~53)
+- Expo Router
+- EAS (Expo Application Services) for builds
+- Firebase (Auth, Firestore, Functions)
+- Native modules: react-native-vision-camera, fast-tflite bindings, etc.
+- TypeScript, Jest for tests, ESLint + Prettier for linting/formatting
 
 ---
 
-## 🚀 Getting Started
+## Quick links
 
-### 1. Clone the Repository
+- Project root: `README.md`
+- Main scripts: defined in `package.json` (`start`, `android`, `ios`, `web`, `lint`, `test`)
+- Firebase config: `firebaseConfig.js` and `google-services.json` / `GoogleService-Info.plist`
 
-```sh
-git clone https://github.com/jmmarcuis/powersyncmobile.git
+---
+
+## Prerequisites
+
+- Node.js (recommended >= 18.x)
+- Yarn or npm
+- Expo CLI and EAS CLI (optional globally; you can also use `npx`)
+- Android Studio (for Android emulator or building via `expo run:android`) and Android SDK
+- Xcode (required for building/running on iOS; macOS only)
+
+Windows-specific notes: use PowerShell (this README shows PowerShell-friendly commands); building iOS requires macOS.
+
+---
+
+## Getting started (development)
+
+1. Clone the repo and install dependencies:
+
+```powershell
+git clone <your-repo-url>
 cd powersyncmobile
-```
-
----
-
-### 2. Install Dependencies
-
-```sh
 yarn install
-# OR if yarn doesn't work:
-npm install
+# or: npm install
 ```
+
+2. Configure Firebase / environment values
+
+- Confirm `firebaseConfig.js` contains the correct Firebase project settings for your environment.
+- For Android: place `google-services.json` in `android/app/` (already present in repo but double-check it matches your Firebase project).
+- For iOS: place `GoogleService-Info.plist` in the iOS project (if you build iOS).
+
+3. Start the Metro bundler / Expo server
+
+```powershell
+yarn start
+# or: npm run start
+```
+
+4. Run on a device or emulator
+
+- Android (emulator or connected device):
+
+```powershell
+yarn android
+# or: npm run android
+```
+
+- iOS (macOS only):
+
+```powershell
+yarn ios
+# or: npm run ios
+```
+
+- Web (development):
+
+```powershell
+yarn web
+# or: npm run web
+```
+
+Notes:
+- Because this project includes native modules, the standard Expo Go client will not work. Use `expo run:android` / `expo run:ios` or create a custom dev client via `eas build -p android --profile development` and install it on your device.
 
 ---
 
-### 3. Install Expo & EAS CLI (if not installed)
+## Production builds (EAS)
 
-```sh
-npm install -g expo-cli eas-cli
-```
+This repository includes `eas.json` for EAS builds. Example commands:
 
----
-
-### 4. Configure EAS Build
-
-Make sure your `eas.json` is properly configured. Here's a sample:
-
-```json
-{
-  "build": {
-    "production": {
-      "android": {
-        "buildType": "apk"
-      }
-    }
-  }
-}
-```
-
----
-
-### 5. Build and Sideload the APK
-
-Build the project using EAS:
-
-```sh
+```powershell
+# Android production build
 eas build -p android --profile production
+
+# iOS production build (macOS or EAS cloud)
+eas build -p ios --profile production
 ```
 
-After the build completes, download the APK from the Expo dashboard.
-
-Then sideload it to your Android phone:
-
-```sh
-adb install app-release.apk
-```
-
-> ⚠️ Ensure that **USB debugging is enabled** on your Android device and **apps from unknown sources** are allowed.
+Follow Expo/EAS docs to configure credentials (keystore, Apple credentials) before building.
 
 ---
 
-## 🌐 Connect to FastAPI Backend
+## Scripts (from `package.json`)
 
-This app is designed to stream video to a WebRTC-compatible **FastAPI** server for pose estimation.
+- `start` — Expo start server (Metro)
+- `android` — expo run:android (installs and runs on device/emulator)
+- `ios` — expo run:ios (macOS only)
+- `web` — run web build with Expo
+- `lint` — run ESLint
+- `test` — run Jest tests
 
-Update your WebSocket signaling server URL and ICE servers in the config:
+Example (PowerShell):
 
-```ts
-const configuration = {
-  iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'turn:your.turn.server:3478', username: 'user', credential: 'pass' },
-  ],
-};
-
-const SIGNALING_SERVER_URL = 'http://<YOUR_BACKEND_IP>:8000';
-```
-
-Replace `<YOUR_BACKEND_IP>` with the LAN IP of your FastAPI backend server.
-
----
-
-## ⚙️ FastAPI Backend Setup (Pose Estimation)
-
-This app is meant to connect to a separate backend using WebRTC + AI.
-
-You can clone the backend repository and set it up like this:
-
-```sh
-git clone https://github.com/jmmarcuis/powersync-backend.git
-cd powersync-backend
-
-# Create conda env (optional)
-conda create -n powersync python=3.10
-conda activate powersync
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run server
-uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
-
-Backend handles:
-
-* WebRTC signaling via socket.io
-* Frame capture and decoding via aiortc
-* Pose estimation using MoveNet via TensorFlow
-* Processed frame queue + optional return video stream
-
----
-
-## 📂 Project Structure
-
-```
-powersyncmobile/
-├── App.js
-├── components/
-├── screens/
-├── utils/
-├── assets/
-├── constants/
-└── package.json
+```powershell
+yarn lint
+yarn test
 ```
 
 ---
 
-## 🧪 Troubleshooting
+## Testing & linting
 
-* **App stuck reconnecting**: Make sure backend is accessible and CORS is configured.
-* **Blank remote stream**: Verify STUN/TURN servers work or are regionally close.
-* **Camera/mic permissions**: Ensure Android permissions are granted after installation.
-* **APK fails to install**: Ensure the device allows apps from unknown sources and USB debugging is enabled.
-* **Build fails**: Make sure your app doesn't contain Expo Go-only libraries. Use `expo doctor` to validate.
+- Tests use Jest. Run `yarn test` or `npm run test` for the test suite.
+- Lint with `yarn lint` (ESLint + Prettier configured).
 
 ---
+
+## Important files & structure
+
+Top-level files/folders to know:
+
+- `app/` — Expo Router pages and app routes
+- `src/` — source code (components, hooks, utils, contexts)
+- `android/` — Android native project (for building/running native code)
+- `assets/` — static assets, including ML models (see `src/app/assets/movenet_lightning.tflite`)
+- `firebaseConfig.js` — project Firebase configuration wrapper
+- `eas.json` — EAS build profiles
+- `package.json` — scripts and dependencies
+
+---
+
+## Firebase setup notes
+
+- Ensure the Firebase project has Authentication and Firestore enabled if you intend to use those features.
+- Confirm `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) are correct and placed in the native project as required.
+
+---
+
+## Troubleshooting
+
+- App won't open / crashes:
+  - Check native module installation and rebuild the app (`yarn android` / `yarn ios`).
+  - Clear Metro cache: `expo start -c`.
+- Permissions (camera/microphone): verify runtime permissions in Android settings and request permissions in-app.
+- Backend connection problems: check signaling server URL and your device/network firewall.
+
+If you still have problems, review logs from Metro and logcat (Android):
+
+```powershell
+# Show Android device logs
+adb logcat | Select-String -Pattern "ReactNative" -SimpleMatch
+```
+
+---
+
+## Contributing & next steps
+
+- If you plan to contribute, open an issue or PR with a clear description and small, focused changes.
+- Suggested improvements:
+  - Add CI for tests and linting (GitHub Actions)
+  - Add CONTRIBUTING.md and CODE_OF_CONDUCT.md
+  - Document EAS credential setup and automated EAS builds
+
+---
+
+## License & maintainers
+
+This repository is marked `private` in `package.json`. Add license information here if you change it to public.
+
+Maintainers: repository owner / project team
+
+---
+
+If you'd like, I can also add a short `CONTRIBUTING.md`, example `.env.example`, or CI workflow to run tests and linting automatically.
+
