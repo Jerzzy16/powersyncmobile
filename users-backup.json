@@ -1,0 +1,93 @@
+{"users": [
+{
+  "localId": "ANpYjvPZnNQLoZVSHxb0WcC2YBX2",
+  "email": "superadmin@test.com",
+  "emailVerified": false,
+  "passwordHash": "PK+y6/A2BuvAVrMNsVbIRhkzshCT2a9+YDBQ/LqnpWbHEBBi8tTcdecf/EADgbZxLSdAiZpax3QJuC9VfsxU8Q==",
+  "salt": "bAGjPQTO12FsBg==",
+  "displayName": "Testingggg",
+  "lastSignedInAt": "1760869163783",
+  "createdAt": "1760869163783",
+  "providerUserInfo": []
+},
+{
+  "localId": "CHTgRc0sFFMGXLug98YIuUooQor2",
+  "email": "seanragne@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "j84iHOzVRBVRfPNSl6YZ+9K5wC3tGCIT3ilg6uZ+792wIujBcbPpXfBurYH1y09DSzlJ4FPq8XBLBkM491L73w==",
+  "salt": "PQEN87z67AgvUQ==",
+  "displayName": "Ginyo",
+  "photoUrl": "https://res.cloudinary.com/drf4qnjow/image/upload/v1749265570/profile_images/kkxoumq8ozkiymjpc5je.jpg",
+  "lastSignedInAt": "1749265508508",
+  "createdAt": "1749265508508",
+  "providerUserInfo": []
+},
+{
+  "localId": "UtWqYYyR7FO9gbvMz2xn6WE4e3i1",
+  "email": "sushibox44@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "sA6W51gr+mCo+HIYd33Kq0Y+dXKpbYLPweKvRWji0u7kgAcWseSfyeKWXrJX6E/UdbNzvtXITDtCZb9QndGBnA==",
+  "salt": "QG++zDcq6RVTHw==",
+  "displayName": "Sushibox",
+  "lastSignedInAt": "1760539424848",
+  "createdAt": "1759319874874",
+  "providerUserInfo": []
+},
+{
+  "localId": "dsfQT7YQPWVbunUuSCOcibrPXwX2",
+  "email": "test@test.com",
+  "emailVerified": false,
+  "passwordHash": "LmeDdRmUS5OqvzYbM6uBbwBWfGV0FNMaKhGrJpZWX/W5joNmGnuVNypFXUTHehHOhjlY0NrBInvdX9juO5nO4g==",
+  "salt": "dug0M2mFJMOATg==",
+  "displayName": "Test",
+  "lastSignedInAt": "1760451648776",
+  "createdAt": "1758987308381",
+  "providerUserInfo": []
+},
+{
+  "localId": "isSLWmFAzmMBZyxeiFrCfj9EBaI2",
+  "email": "test1@test.com",
+  "emailVerified": false,
+  "passwordHash": "OtH5GO5oT22Sk6NN2Q+9//84zUTYLnfvT+8Mu2eM2C6erRbkUDZQRNTdYSDA+8tBfIXlBpeiZiAUz8S4xhZBHg==",
+  "salt": "rf/V9Z5SPgGxXw==",
+  "displayName": "Test",
+  "photoUrl": "https://res.cloudinary.com/drf4qnjow/image/upload/v1760525492/profile_images/iauich7riqgvjsqccy9o.jpg",
+  "lastSignedInAt": "1760464052486",
+  "createdAt": "1760457565607",
+  "providerUserInfo": []
+},
+{
+  "localId": "jyKZdZnIqJha7CzW4yGPJO6Ofiq1",
+  "email": "marcosjhainnoallrick@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "1/HT3SeXZMQH/kMZIy54ESui8MGpDs7zZOOItdLFvBJt0SlY7JPegQlhq8rWJPjSa67heI+22F416F1hXDE2lw==",
+  "salt": "WAWiHf70iZEdsw==",
+  "displayName": "Jhainno Admin Account [DO NOT DELETE]",
+  "lastSignedInAt": "1759672268723",
+  "createdAt": "1750062834233",
+  "disabled": false,
+  "customAttributes": "{\"admin\":true}",
+  "providerUserInfo": []
+},
+{
+  "localId": "lyXFSVr7iEQvZ3cG3b5PFQzWfBv2",
+  "email": "jvniusmarcus@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "7razIXyzCe1+aiIER0UD41exYGmOJ04mFtpvg58HIe/3AZ5J46FQOvFVd+9CT+xXx4NODYPS+Q9X2MPX+rruCQ==",
+  "salt": "aCa7O58UEUdaUw==",
+  "displayName": "Jhainno test account",
+  "lastSignedInAt": "1751204819654",
+  "createdAt": "1750552246024",
+  "providerUserInfo": []
+},
+{
+  "localId": "w0N4Z2H2hchKHiM0CjtmRYjYaeb2",
+  "email": "sss@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "SUiaKEdh32OuJ2ErCUnkuhtyjYw2g/Fr8Sp2GiKL4UIn5sRrLcKv/pfSa+zlCN+fuYG4Ozco4G2xLlvzqWJ1eQ==",
+  "salt": "5aymIjS6BKe1zw==",
+  "displayName": "sdsds",
+  "lastSignedInAt": "1753032119530",
+  "createdAt": "1753032119530",
+  "providerUserInfo": []
+}]}

@@ -1,0 +1,130 @@
+{
+  "expo": {
+    "name": "PowerSync",
+    "slug": "PowerSync",
+    "scheme": "powersync",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "../assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "../assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.jeiiimarc.test",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera.",
+        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone.",
+        "NSLocalNetworkUsageDescription": "Allow access to local network for development",
+        "NSBonjourServices": [
+          "_http._tcp",
+          "_ws._tcp"
+        ]
+      },
+      "bitcode": false,
+      "deploymentTarget": "15.1",
+      "buildNumber": "1"
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.jeiiimarc.test",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.INTERNET",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WAKE_LOCK",
+        "android.permission.BLUETOOTH",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "intentFilters": [
+        {
+          "action": "android.intent.action.MAIN",
+          "category": [
+            "android.intent.category.LAUNCHER"
+          ]
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 26,
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0",
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "extraProguardRules": "-keep public class com.horcrux.svg.** { *; }\n-keep class com.mrousavy.camera.** { *; }\n-keep class com.mrousavy.camera.frameprocessor.** { *; }\n-keep class com.margelo.nitro.** { *; }\n-keep class com.margelo.worklets.** { *; }\n-keep class org.tensorflow.lite.** { *; }\n-keep class org.tensorflow.lite.gpu.** { *; }\n-keep class org.tensorflow.lite.gpu.GpuDelegate { *; }\n-keep class org.tensorflow.lite.gpu.GpuDelegateFactory { *; }\n-keep class org.tensorflow.lite.gpu.GpuDelegateFactory$Options { *; }\n-keep class org.tensorflow.lite.gpu.GpuDelegateFactory$Options$GpuBackend { *; }\n-keep class org.tensorflow.lite.Interpreter { *; }\n-keep class org.tensorflow.lite.Interpreter$Options { *; }\n-keep class org.tensorflow.lite.Tensor { *; }\n-keep class org.tensorflow.lite.NativeInterpreterWrapper { *; }\n-keep class org.tensorflow.lite.NativeInterpreterWrapperExperimental { *; }\n-keep @org.tensorflow.lite.annotations.UsedByReflection class * { *; }\n-keepclassmembers class * {\n  @org.tensorflow.lite.annotations.UsedByReflection *;\n}\n-dontwarn org.tensorflow.lite.**\n-dontnote org.tensorflow.lite.**\n-dontwarn com.mrousavy.camera.**\n-dontwarn com.margelo.worklets.**\n-keep class com.swmansion.** { *; }",
+            "extraMavenRepos": [],
+            "extraGradleProperties": {
+              "org.gradle.jvmargs": "-Xmx8192m -XX:MaxMetaspaceSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:ReservedCodeCacheSize=512m -XX:+UseG1GC",
+              "org.gradle.workers.max": "1",
+              "org.gradle.parallel": "true",
+              "org.gradle.caching": "true",
+              "org.gradle.configureondemand": "true",
+              "VisionCamera_enableFrameProcessors": "true"
+            }
+          },
+          "ios": {
+            "useFrameworks": "static",
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
+        }
+      ],
+      [
+        "react-native-permissions",
+        {
+          "iosPermissions": [
+            "Camera",
+            "Microphone"
+          ]
+        }
+      ],
+      [
+        "react-native-fast-tflite",
+        {
+          "enableAndroidGpuLibraries": true,
+          "enableCoreMLDelegate": true
+        }
+      ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6f62599b-ad8c-43db-b88e-ec583ad4dd70"
+      }
+    }
+  }
+}

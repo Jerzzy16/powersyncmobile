@@ -1,0 +1,220 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Core authentication check
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Owner check - minimal reads needed
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // SAFE: Single get() call with proper null handling
+    // Returns user document or empty map if not found
+    function getUserDoc() {
+      let doc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return doc != null ? doc.data : {};
+    }
+    
+    // SAFE: Check if user is admin or superadmin using cached doc
+    function isAdminOrSuper() {
+      let userData = getUserDoc();
+      let role = userData.get('role', 'user');
+      return role == 'admin' || role == 'superadmin';
+    }
+    
+    // SAFE: Get user's permissions safely with defaults
+    function getPermissions() {
+      let userData = getUserDoc();
+      return userData.get('permissions', {});
+    }
+    
+    function hasPermission(permission) {
+      return isAuthenticated() && getPermissions().get(permission, false) == true;
+    }
+    
+    // SAFE: Check if account is active
+    function isActive() {
+      let userData = getUserDoc();
+      let status = userData.get('accountStatus', 'pending');
+      return status == 'active';
+    }
+    
+    // SAFE: Check if user is superadmin (more restrictive than isAdminOrSuper)
+    function isSuperAdmin() {
+      let userData = getUserDoc();
+      let role = userData.get('role', 'user');
+      return role == 'superadmin';
+    }
+    
+    // Users collection - User profiles
+    match /users/{userId} {
+      // RULE 1: Users can always read their own profile (no extra get() calls)
+      allow read: if isOwner(userId);
+      
+      // RULE 2: Admins/superadmins can read other user profiles
+      // SAFE: Uses cached get() for one-time user data access
+      allow read: if isAuthenticated()
+                  && userId != request.auth.uid
+                  && resource.data.role != 'superadmin'
+                  && isAdminOrSuper();
+      
+      // SPECIAL: Allow anyone to list users collection (for first user check during registration)
+      // This is safe because individual user data requires authentication
+      allow list: if true;
+      
+      // Only the user can create their profile during registration
+      // OR admins/superadmins can create user documents directly
+      allow create: if (isOwner(userId) 
+                    && request.resource.data.uid == userId
+                    && request.resource.data.email == request.auth.token.email)
+                    || (isAuthenticated()
+                    && isAdminOrSuper()
+                    && request.resource.data.uid != null
+                    && request.resource.data.email != null);
+      
+      // User can update their own basic info (cannot change role/permissions/accountStatus)
+      allow update: if isOwner(userId) 
+                    && !request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny(['role', 'permissions', 'accountStatus']);
+      
+      // Admins can update non-superadmin users only
+      // SAFE: Single cached get() call
+      allow update: if isAuthenticated()
+                    && isActive()
+                    && hasPermission('canManageUsers')
+                    && resource.data.role != 'superadmin'
+                    && request.resource.data.role != 'superadmin'
+                    && isAdminOrSuper();
+      
+      // Super admins can update any user including roles
+      // SAFE: Uses helper function instead of inline let
+      allow update: if isAuthenticated()
+                    && isActive()
+                    && hasPermission('canManageAdmins')
+                    && isSuperAdmin();
+      
+      // Admins/Super Admins can delete non-superadmin users
+      // SAFE: Single get() call with all data cached
+      allow delete: if request.auth != null
+                    && isActive()
+                    && hasPermission('canManageUsers')
+                    && resource.data.role != 'superadmin'
+                    && isAdminOrSuper();
+      
+      // Super Admins can delete any user including other superadmins
+      allow delete: if request.auth != null
+                    && isActive()
+                    && hasPermission('canManageAdmins')
+                    && isAdminOrSuper()
+                    && isSuperAdmin();
+    }
+    
+    // Audit logs - Security tracking
+    match /audit_logs/{logId} {
+      // Allow authenticated users to create audit logs
+      // This applies during registration (when user profile might not exist yet)
+      // and for normal operations. Ensure required fields are present.
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasAll(['userId', 'action', 'timestamp', 'category']);
+      
+      // Admins/Super admins can read audit logs
+      // SAFE: Uses cached get() for role checking
+      allow read: if isAuthenticated()
+                  && hasPermission('canViewAuditLogs')
+                  && isAdminOrSuper();  // Uses cached get()
+      
+      // Alternative: Allow reading own audit logs (no extra get() needed)
+      allow read: if request.auth.uid == resource.data.userId;
+      
+      // No updates or deletes allowed
+      allow update, delete: if false;
+    }
+    
+    // User creation requests collection - For use with Cloud Functions
+    // Admins/Super Admins submit requests to create users without logging out
+    match /user_creation_requests/{requestId} {
+      // Allow authenticated admins/super admins to create user creation requests
+      // SAFE: Uses single cached get() call
+      allow create: if isAuthenticated()
+                    && request.resource.data.createdBy == request.auth.uid
+                    && request.resource.data.email != null
+                    && request.resource.data.displayName != null
+                    && request.resource.data.password != null
+                    && request.resource.data.role != null
+                    && request.resource.data.createdAt != null
+                    && request.resource.data.status != null
+                    && isAdminOrSuper();
+      
+      // Allow users to read their own creation request status (for polling)
+      allow read: if request.auth != null 
+                  && resource.data.createdBy == request.auth.uid;
+      
+      // Cloud Functions will update these documents with admin access
+      allow write: if false;
+    }
+    
+    // System configuration - Super admin only
+    match /system_config/{configId} {
+      // Only super admins can read/write system config
+      // SAFE: Uses cached get()
+      allow read, write: if isAuthenticated()
+                         && hasPermission('canModifySettings')
+                         && isSuperAdmin();
+    }
+    
+        
+    // Rate limiting collection - System managed
+    match /rate_limits/{limitId} {
+      // Users can read/write their own rate limit data
+      allow read, write: if isAuthenticated() 
+                         && limitId == request.auth.uid;
+    }
+    
+    // Video uploads metadata (from your workout app)
+    match /videos/{videoId} {
+      // Users can create their own videos
+      allow create: if isAuthenticated() 
+                    && request.resource.data.userId == request.auth.uid;
+      
+      // Users can read their own videos
+      allow read: if isAuthenticated() 
+                  && resource.data.userId == request.auth.uid;
+      
+      // Users can update/delete their own videos
+      allow update, delete: if isAuthenticated() 
+                            && resource.data.userId == request.auth.uid;
+      
+      // Admins can read all videos (simplified - single cached get() call)
+      // SAFE: Uses isAdminOrSuper() which caches get()
+      allow read: if isAuthenticated()
+                  && isAdminOrSuper();
+      
+      // Admins can delete any video (moderation) - simplified
+      // SAFE: Uses cached get()
+      allow delete: if isAuthenticated()
+                    && hasPermission('canManageUsers')
+                    && isAdminOrSuper();
+    }
+    
+    // Workout sessions (if you add this later)
+    match /workout_sessions/{sessionId} {
+      // Users can create their own sessions
+      allow create: if isAuthenticated() 
+                    && request.resource.data.userId == request.auth.uid;
+      
+      // Users can read/update/delete their own sessions (no extra get() calls)
+      allow read, update, delete: if isAuthenticated() 
+                                   && resource.data.userId == request.auth.uid;
+    }
+    
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

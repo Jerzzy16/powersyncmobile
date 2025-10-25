@@ -1,0 +1,127 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# EAS
+eas-build-*.tar.gz
+.eas/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.ipa
+*.apk
+*.aab
+
+# Android
+android/build/
+android/app/build/
+android/.gradle/
+# Keep gradle wrapper for EAS Build (DO NOT IGNORE gradlew files!)
+# android/gradle/
+# android/gradlew
+# android/gradlew.bat
+android/local.properties
+android/.cxx/
+android/app/release/
+android/.idea/
+android/captures/
+*.iml
+
+# iOS
+ios/Pods/
+ios/build/
+ios/*.xcworkspace
+!ios/*.xcodeproj
+ios/*.xcodeproj/*
+!ios/*.xcodeproj/project.pbxproj
+!ios/*.xcodeproj/xcshareddata/
+ios/Podfile.lock
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Metro
+.metro-health-check*
+.metro/
+
+# Debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+logs/
+
+# Testing
+coverage/
+.nyc_output
+.jest/
+
+# macOS
+.DS_Store
+*.pem
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Environment files
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Firebase Admin SDK Service Account Keys (NEVER COMMIT THESE!)
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+
+# TypeScript
+*.tsbuildinfo
+.tsbuildinfo
+*.d.ts.map
+
+# IDE
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+.factorypath
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# Misc
+.vercel
+.turbo
+.next/
+out/
